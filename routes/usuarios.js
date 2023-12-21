@@ -20,18 +20,32 @@ router.get('/', async (req, res) => {
 // Ruta para crear un nuevo usuario
 router.post('/', async (req, res) => {
   try {
-    const { username, password, email } = req.body;
+    const {
+      codigo,
+      nombre,
+      primer_apellido,
+      segundo_apellido,
+      correo_electronico,
+      nombre_usuario,
+      contrasena,
+      rol,
+    } = req.body;
 
-    // Validar los datos (puedes usar una biblioteca de validación como 'validator')
-
-    // Insertar el nuevo usuario en la base de datos
     const pool = await sql.connect(dbConfig);
     const result = await pool
       .request()
-      .input('Username', sql.NVarChar, username)
-      .input('Password', sql.NVarChar, password)
-      .input('Email', sql.NVarChar, email)
-      .query('INSERT INTO Usuario (Username, Password, Email) VALUES (@Username, @Password, @Email)');
+      .input('Codigo', sql.Int, codigo)
+      .input('Nombre', sql.NVarChar, nombre)
+      .input('PrimerApellido', sql.NVarChar, primer_apellido)
+      .input('SegundoApellido', sql.NVarChar, segundo_apellido)
+      .input('CorreoElectronico', sql.NVarChar, correo_electronico)
+      .input('NombreUsuario', sql.NVarChar, nombre_usuario)
+      .input('Contrasena', sql.NVarChar, contrasena)
+      .input('Rol', sql.Int, rol)
+      .query(
+        'INSERT INTO Usuario (codigo, nombre, primer_apellido, segundo_apellido, correo_electronico, nombre_usuario, contrasena, rol) ' +
+          'VALUES (@Codigo, @Nombre, @PrimerApellido, @SegundoApellido, @CorreoElectronico, @NombreUsuario, @Contrasena, @Rol)'
+      );
 
     res.status(201).json({ message: 'Usuario creado exitosamente' });
   } catch (error) {
@@ -40,23 +54,38 @@ router.post('/', async (req, res) => {
   }
 });
 
-// Ruta para actualizar un usuario por su ID
-router.put('/:id', async (req, res) => {
+// Ruta para actualizar un usuario por su código
+router.put('/:codigo', async (req, res) => {
   try {
-    const userId = req.params.id;
-    const { username, password, email } = req.body;
+    const {
+      nombre,
+      primer_apellido,
+      segundo_apellido,
+      correo_electronico,
+      nombre_usuario,
+      contrasena,
+      rol,
+    } = req.body;
 
-    // Validar los datos y verificar si el usuario existe en la base de datos
+    const codigo = req.params.codigo;
 
-    // Actualizar la información del usuario
     const pool = await sql.connect(dbConfig);
     const result = await pool
       .request()
-      .input('UserId', sql.Int, userId)
-      .input('Username', sql.NVarChar, username)
-      .input('Password', sql.NVarChar, password)
-      .input('Email', sql.NVarChar, email)
-      .query('UPDATE Usuario SET Username = @Username, Password = @Password, Email = @Email WHERE ID = @UserId');
+      .input('Nombre', sql.NVarChar, nombre)
+      .input('PrimerApellido', sql.NVarChar, primer_apellido)
+      .input('SegundoApellido', sql.NVarChar, segundo_apellido)
+      .input('CorreoElectronico', sql.NVarChar, correo_electronico)
+      .input('NombreUsuario', sql.NVarChar, nombre_usuario)
+      .input('Contrasena', sql.NVarChar, contrasena)
+      .input('Rol', sql.Int, rol)
+      .input('Codigo', sql.Int, codigo)
+      .query(
+        'UPDATE Usuario SET nombre = @Nombre, primer_apellido = @PrimerApellido, ' +
+          'segundo_apellido = @SegundoApellido, correo_electronico = @CorreoElectronico, ' +
+          'nombre_usuario = @NombreUsuario, contrasena = @Contrasena, rol = @Rol ' +
+          'WHERE codigo = @Codigo'
+      );
 
     res.status(200).json({ message: 'Usuario actualizado exitosamente' });
   } catch (error) {
@@ -65,19 +94,16 @@ router.put('/:id', async (req, res) => {
   }
 });
 
-// Ruta para eliminar un usuario por su ID
-router.delete('/:id', async (req, res) => {
+// Ruta para eliminar un usuario por su código
+router.delete('/:codigo', async (req, res) => {
   try {
-    const userId = req.params.id;
+    const codigo = req.params.codigo;
 
-    // Verificar si el usuario existe en la base de datos
-
-    // Eliminar el usuario
     const pool = await sql.connect(dbConfig);
     const result = await pool
       .request()
-      .input('UserId', sql.Int, userId)
-      .query('DELETE FROM Usuario WHERE ID = @UserId');
+      .input('Codigo', sql.Int, codigo)
+      .query('DELETE FROM Usuario WHERE codigo = @Codigo');
 
     res.status(200).json({ message: 'Usuario eliminado exitosamente' });
   } catch (error) {
