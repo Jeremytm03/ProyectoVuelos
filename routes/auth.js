@@ -1,11 +1,7 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
 
-const app = express();
-const PORT = 3000;
-
-// Secret key for JWT
-const secretKey = 'yourSecretKey';
+const router = express.Router();
 
 // Middleware to verify JWT token
 const verifyToken = (req, res, next) => {
@@ -27,7 +23,7 @@ const verifyToken = (req, res, next) => {
 };
 
 // Route for user login
-app.post('/login', (req, res) => {
+router.post('/login', (req, res) => {
   const { username, password } = req.body;
 
   // TODO: Implement your actual authentication logic here (e.g., check against a database)
@@ -40,10 +36,8 @@ app.post('/login', (req, res) => {
 });
 
 // Protected route that requires authentication
-app.get('/protected', verifyToken, (req, res) => {
+router.get('/protected', verifyToken, (req, res) => {
   res.status(200).send({ message: 'You are authenticated!', user: req.user });
 });
 
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
-});
+module.exports = router;

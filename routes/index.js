@@ -1,10 +1,15 @@
+// routes/index.js
 const express = require('express');
-const usuarios = require('./usuarios.js');
-const auth = require('./auth.js');
+const usuariosRouter = require('./usuarios.js');  
+const authRouter = require('./auth.js');  
 
 const router = express.Router();
 
-router.use('/usuarios', usuarios);
-router.use('auth', auth);
+// Agrega esta línea para que Express pueda parsear el cuerpo de las solicitudes
+router.use(express.json());
+
+// Ajusta las rutas según tu estructura
+router.use('/usuarios', usuariosRouter);
+router.use('/auth', authRouter);
 
 module.exports = router;
